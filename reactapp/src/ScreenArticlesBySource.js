@@ -46,10 +46,18 @@ function ScreenArticlesBySource(props) {
       let response = await rawResponse.json();
       setArticleList(response.articles);
     };
+
     articleSource();
   }, []);
+
   // console.log(id);
-  // console.log(articleList);
+  const saveArticleInDB = async (article) => {
+    await fetch("/addarticlewishlist", {
+      method: "PUT",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: `token=${props.userToken}&article=${JSON.stringify(article)}`,
+    });
+  };
 
   let articleBySource = articleList.map((article) => {
     let reduceContent = article.content;
@@ -101,15 +109,20 @@ function ScreenArticlesBySource(props) {
               <Icon
                 type="like"
                 key="ellipsis"
-                onClick={() =>
+                onClick={() => {
                   props.addToWishList({
-                    token: props.userToken,
                     title: article.title,
                     description: article.description,
                     content: article.content,
                     image: article.urlToImage,
-                  })
-                }
+                  });
+                  saveArticleInDB({
+                    title: article.title,
+                    description: article.description,
+                    content: article.content,
+                    image: article.urlToImage,
+                  });
+                }}
               />,
             ]}
           >
@@ -140,8 +153,8 @@ function mapDispatchToProps(dispatch) {
 }
 
 function mapStateToProps(state) {
-  console.log(state);
-  return { userToken: state.token };
+  console.log(state.wishlist);
+  return { userToken: state.token, wishlist: state.wishlist };
 }
 
 export default connect(

@@ -1,5 +1,7 @@
 export default function (wishlist = [], action) {
-  if (action.type === "addArticle") {
+  if (action.type === "initwishlist") {
+    return action.articles;
+  } else if (action.type === "addArticle") {
     let inWishList = wishlist.find(
       (element) => element.title === action.article.title
     );

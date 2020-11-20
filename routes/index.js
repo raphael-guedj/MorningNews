@@ -43,7 +43,7 @@ router.post("/sign-in", async function (req, res) {
   var userExists = await userModel.findOne({
     email: req.body.emailFromFront,
   });
-  console.log(userExists);
+  // console.log(userExists);
   let token = userExists.token;
   var hash = SHA256(req.body.passwordFromFront + userExists.salt).toString(
     encBase64
@@ -61,8 +61,31 @@ router.post("/sign-in", async function (req, res) {
   }
 });
 
-router.get("/updateuser", async function (req, res, next) { 
+router.put("/addarticlewishlist", async function (req, res, next) {
+  const user = await userModel.findOne({ token: req.body.token });
+  var article = JSON.parse(req.body.article);
 
-}
+  user.myarticles.push(article);
+  await user.save();
 
+  res.json({ result: true });
+});
+
+router.put("/deletearticlewishlist", async function (req, res, next) {
+  const user = await userModel.findOne({ token: req.body.token });
+
+  const myarticlesFilter = user.myarticles.filter(
+    (article) => article.title !== req.body.title
+  );
+  user.myarticles = myarticlesFilter;
+  await user.save();
+
+  res.json({ result: true });
+});
+
+router.get("/initwishlist/:token", async function (req, res) {
+  const user = await userModel.findOne({ token: req.params.token });
+
+  res.json({ result: true, myarticles: user.myarticles });
+});
 module.exports = router;

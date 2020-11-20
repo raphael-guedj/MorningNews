@@ -1,14 +1,27 @@
 import React, { useState, useEffect } from "react";
+import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import "./App.css";
 import { List, Avatar } from "antd";
 
 import Nav from "./Nav";
 
-function ScreenSource() {
+function ScreenSource(props) {
   const [sourceList, setsourceList] = useState([]);
   const [language, setLanguage] = useState("fr");
   const [country, setCountry] = useState("fr");
+
+  useEffect(() => {
+    const initwishlist = async () => {
+      if (props.userToken) {
+        let rawResponse = await fetch(`/initwishlist/${props.userToken}`);
+        let response = await rawResponse.json();
+        console.log(response);
+        props.initwishlist(response.myarticles);
+      }
+    };
+    initwishlist();
+  }, [props.userToken]);
 
   useEffect(() => {
     const recentNews = async () => {
@@ -80,4 +93,16 @@ function ScreenSource() {
   );
 }
 
-export default ScreenSource;
+function mapStateToProps(state) {
+  return { userToken: state.token };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    initwishlist: function (articles) {
+      dispatch({ type: "initwishlist", articles });
+    },
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ScreenSource);

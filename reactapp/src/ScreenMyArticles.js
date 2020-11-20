@@ -30,6 +30,14 @@ function ScreenMyArticles(props) {
     setVisible(false);
   };
 
+  const deleteArticleDB = async (title) => {
+    await fetch("/deletearticlewishlist", {
+      method: "PUT",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: `token=${props.userToken}&title=${title}`,
+    });
+  };
+
   return (
     <div>
       <Nav />
@@ -55,7 +63,10 @@ function ScreenMyArticles(props) {
                     <Icon
                       type="delete"
                       key="ellipsis"
-                      onClick={() => props.deleteToWishList(article.title)}
+                      onClick={() => {
+                        props.deleteToWishList(article.title);
+                        deleteArticleDB(article.title);
+                      }}
                     />,
                   ]}
                 >
@@ -87,7 +98,7 @@ function ScreenMyArticles(props) {
 
 function mapStateToProps(state) {
   console.log(state);
-  return { myArticles: state.wishlist };
+  return { myArticles: state.wishlist, userToken: state.token };
 }
 
 function mapDispatchToProps(dispatch) {
