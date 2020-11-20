@@ -17,11 +17,7 @@ router.post("/sign-up", async function (req, res) {
   // console.log(userExist);
   if (userExist) {
     res.json({ result: false, reason: "ce user est déja enregistré en base" });
-  } else if (
-    req.body.usernameFromFront == "" ||
-    req.body.emailFromFront == "" ||
-    req.body.passwordFromFront == ""
-  ) {
+  } else if (req.body.usernameFromFront == "" || req.body.emailFromFront == "" || req.body.passwordFromFront == "") {
     res.json({ result: false, reason: "vérifiez les informations saisies" });
   } else {
     var salt = uid2(32);
@@ -45,9 +41,7 @@ router.post("/sign-in", async function (req, res) {
   });
   console.log(userExists);
   let token = userExists.token;
-  var hash = SHA256(req.body.passwordFromFront + userExists.salt).toString(
-    encBase64
-  );
+  var hash = SHA256(req.body.passwordFromFront + userExists.salt).toString(encBase64);
 
   if (
     userExists &&
@@ -61,8 +55,11 @@ router.post("/sign-in", async function (req, res) {
   }
 });
 
-router.get("/updateuser", async function (req, res, next) { 
+router.get("/updateuser", async function (req, res, next) {});
 
-}
+router.put("/addlanguage", async function (req, res, next) {
+  console.log(req.body);
+  res.json({ message: "Addlanguage" });
+});
 
 module.exports = router;

@@ -82,11 +82,7 @@ function ScreenArticlesBySource(props) {
             }
             actions={[
               <div>
-                <Icon
-                  type="read"
-                  key="ellipsis2"
-                  onClick={() => showModal(article.title, article.content)}
-                />{" "}
+                <Icon type="read" key="ellipsis2" onClick={() => showModal(article.title, article.content)} />{" "}
                 <Modal
                   title={title}
                   visible={visible}
@@ -141,10 +137,7 @@ function mapDispatchToProps(dispatch) {
 
 function mapStateToProps(state) {
   console.log(state);
-  return { userToken: state.token };
+  return { userToken: state.token, language: state.language };
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ScreenArticlesBySource);
+export default connect(mapStateToProps, mapDispatchToProps)(ScreenArticlesBySource);

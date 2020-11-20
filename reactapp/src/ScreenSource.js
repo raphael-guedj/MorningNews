@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { connect } from "react-redux";
 import "./App.css";
 import { List, Avatar } from "antd";
 
 import Nav from "./Nav";
 
-function ScreenSource() {
+function ScreenSource(props) {
   const [sourceList, setsourceList] = useState([]);
-  const [language, setLanguage] = useState("fr");
-  const [country, setCountry] = useState("fr");
+  const [language, setLanguage] = useState("");
+  const [country, setCountry] = useState("");
 
   useEffect(() => {
     const recentNews = async () => {
@@ -23,6 +24,15 @@ function ScreenSource() {
   }, [language, country]);
   // console.log(sourceList);
 
+  const handleSubmitLanguage = async (props) => {
+    let rawResponse = await fetch("/addlanguage", {
+      method: "PUT",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: `language=${language}&country=${country}`,
+    });
+    let response = await rawResponse.json();
+  };
+
   return (
     <div>
       <Nav />
@@ -35,6 +45,7 @@ function ScreenSource() {
             onClick={() => {
               setLanguage("fr");
               setCountry("fr");
+              handleSubmitLanguage(props);
             }}
           />
           <Avatar
@@ -44,6 +55,8 @@ function ScreenSource() {
             onClick={() => {
               setLanguage("en");
               setCountry("gb");
+              handleSubmitLanguage(props);
+              props.addLanguage({ language: language, country: country });
             }}
           />
         </div>
@@ -66,9 +79,7 @@ function ScreenSource() {
               <List.Item>
                 <List.Item.Meta
                   avatar={<Avatar src={avatar} />}
-                  title={
-                    <Link to={`/articlesbysource/${item.id}`}>{item.name}</Link>
-                  }
+                  title={<Link to={`/articlesbysource/${item.id}`}>{item.name}</Link>}
                   description={item.description}
                 />
               </List.Item>
@@ -80,4 +91,18 @@ function ScreenSource() {
   );
 }
 
-export default ScreenSource;
+function mapDispatchToProps(dispatch) {
+  return {
+    addLanguage: function (language) {
+      console.log("Dispatch", language);
+      dispatch({ type: "addLanguage", language });
+    },
+  };
+}
+
+function mapStateToProps(state) {
+  console.log("State", state);
+  return { userToken: state.token, language: state.language };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ScreenSource);
