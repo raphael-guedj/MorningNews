@@ -1,7 +1,7 @@
 import React from "react";
 
 import { connect } from "react-redux";
-import "./App.css";
+import "../App.css";
 import { Card, Icon, Modal } from "antd";
 import Nav from "./Nav";
 

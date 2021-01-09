@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { useParams } from "react-router-dom";
-import "./App.css";
+import "../App.css";
 import { Card, Icon, Row, Col, Modal } from "antd";
 import Nav from "./Nav";
 

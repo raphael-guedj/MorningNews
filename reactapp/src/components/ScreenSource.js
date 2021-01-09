@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
-import "./App.css";
+import "../App.css";
 import { List, Avatar } from "antd";
 
 import Nav from "./Nav";
